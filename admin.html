@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>لوحة الأدمن - منصة الكتب</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/theme.css">
+</head>
+<body>
+  <div class="bg-effects">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+  </div>
+
+  <header>
+    <div class="wrap header-row">
+      <div class="logo">
+        <div class="logo-icon">📚</div>
+        <div>
+          <h1>منصة الكتب الإلكترونية</h1>
+          <p>لوحة الأدمن (Static Studio)</p>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <a class="btn2" href="index.html">فتح المكتبة</a>
+        <button class="btn2" id="importBtn">Import JSON</button>
+        <input id="importFile" type="file" accept="application/json" style="display:none">
+        <button class="btn2" id="exportBtn">Export data.json</button>
+        <button class="btn2" id="resetBtn" title="حذف النسخة المحلية والرجوع للملف الأصلي">Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="muted">
+        ✅ التعديل يتم داخل المتصفح (محلياً). بعد الانتهاء اضغط <b>Export</b> واستبدل الملف داخل <b>data/data.json</b> ثم ارفعه على GitHub.
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Add Book -->
+      <div class="card">
+        <h2>➕ إضافة كتاب</h2>
+        <input id="bTitle" placeholder="عنوان الكتاب">
+        <div style="height:8px"></div>
+        <textarea id="bDesc" placeholder="وصف الكتاب"></textarea>
+
+        <div class="hr"></div>
+        <div class="muted">غلاف الكتاب (من الكمبيوتر):</div>
+        <input id="bCoverFile" type="file" accept="image/*">
+        <div style="height:10px"></div>
+        <img id="bCoverPreview" class="cover" alt="" style="display:none">
+
+        <div style="height:12px"></div>
+        <button class="btn" id="addBookBtn">إضافة</button>
+        <div class="muted" id="msgBook" style="margin-top:10px"></div>
+      </div>
+
+      <!-- Books list -->
+      <div class="card">
+        <h2>📚 الكتب</h2>
+        <div id="booksList" class="muted">تحميل...</div>
+      </div>
+    </div>
+
+    <!-- Pages -->
+    <div class="card" id="pagesBox" style="display:none">
+      <h2>📄 الصفحات</h2>
+      <div class="muted">الكتاب الحالي: <b id="currentBook"></b></div>
+      <div class="hr"></div>
+
+      <div class="row2">
+        <input id="pNo" type="number" placeholder="رقم الصفحة">
+        <input id="pTitle" placeholder="عنوان الصفحة">
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="grid">
+        <div class="card" style="background:#f9fbff">
+          <h3>🎨 إعدادات تصميم الصفحة</h3>
+          <div class="row2">
+            <select id="tpl">
+              <option value="plain">قالب: عادي</option>
+              <option value="card">قالب: بطاقة</option>
+              <option value="split">قالب: عمودين</option>
+            </select>
+            <input id="fontSize" type="number" placeholder="حجم الخط (مثلاً 18)" value="18">
+          </div>
+          <div style="height:8px"></div>
+          <div class="row2">
+            <input id="bg" type="color" value="#ffffff">
+            <input id="text" type="color" value="#1a1a1a">
+          </div>
+          <div style="height:8px"></div>
+          <select id="width">
+            <option value="900">عرض المحتوى: 900px</option>
+            <option value="1100">عرض المحتوى: 1100px</option>
+            <option value="1400">عرض المحتوى: 1400px</option>
+          </select>
+          <div class="muted" style="margin-top:8px">هذه الإعدادات تُطبق على صفحة القراءة.</div>
+        </div>
+
+        <div class="card" style="background:#f9fbff">
+          <h3>🖼️ وسائط الصفحة</h3>
+          <div class="muted">صورة داخل الصفحة (من الكمبيوتر):</div>
+          <input id="pImgFile" type="file" accept="image/*">
+          <div style="height:8px"></div>
+          <img id="pImgPreview" class="cover" alt="" style="display:none">
+
+          <div class="hr"></div>
+          <input id="pAudioUrl" placeholder="رابط صوت mp3 (اختياري)">
+          <div style="height:8px"></div>
+          <input id="pVideoUrl" placeholder="رابط فيديو embed (اختياري)">
+          <div class="muted" style="margin-top:8px">الفيديو الأفضل يكون رابط Embed (يوتيوب).</div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+      <h3>✍️ محرر محتوى الصفحة</h3>
+
+      <div class="toolbar">
+        <button class="tb" id="bBold">B</button>
+        <button class="tb" id="bItalic">I</button>
+        <button class="tb" id="bUnderline">U</button>
+        <button class="tb" id="bH2">H2</button>
+        <button class="tb" id="bH3">H3</button>
+        <button class="tb" id="bUL">• List</button>
+        <button class="tb" id="bOL">1. List</button>
+        <button class="tb" id="bRight">يمين</button>
+        <button class="tb" id="bCenter">وسط</button>
+        <button class="tb" id="bLeft">يسار</button>
+        <input id="color" type="color" title="لون النص" style="width:54px;height:40px;padding:0">
+        <label class="tb" style="cursor:pointer">
+          إدراج صورة داخل النص
+          <input id="inTextImg" type="file" accept="image/*" style="display:none">
+        </label>
+      </div>
+
+      <div style="height:10px"></div>
+      <div id="editor" class="editor" contenteditable="true"></div>
+
+      <div style="height:12px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" id="addPageBtn">حفظ/إضافة الصفحة</button>
+        <button class="btn2" id="previewBtn">Preview</button>
+      </div>
+      <div class="muted" id="msgPage" style="margin-top:10px"></div>
+
+      <div class="hr"></div>
+      <h3>قائمة الصفحات</h3>
+      <div id="pagesList" class="muted"></div>
+    </div>
+
+    <!-- Preview -->
+    <div class="card" id="previewBox" style="display:none">
+      <h2>👁️ معاينة</h2>
+      <div id="preview" class="preview"></div>
+    </div>
+
+  </div>
+
+<script type="module">
+  import { loadData, saveData, resetLocal, downloadJson, uuid, fileToDataUrl, cmd, esc } from "./assets/app.js";
+
+  const $ = (id)=>document.getElementById(id);
+  let DATA = null;
+  let CURRENT_BOOK = null;
+  let pendingCover = "";
+  let pendingPageImg = "";
+
+  function toast(el, msg){ $(el).textContent = msg; setTimeout(()=>$(el).textContent="", 2500); }
+
+  function ensureShape(){
+    if(!DATA.books) DATA.books = [];
+    if(!DATA.pages) DATA.pages = [];
+  }
+
+  function renderBooks(){
+    const books = DATA.books;
+    $("booksList").innerHTML = books.map(b=>`
+      <div class="card">
+        ${b.coverUrl ? `<img class="cover" src="${b.coverUrl}">`:""}
+        <b>${esc(b.title)}</b>
+        <div class="muted">${esc(b.description||"")}</div>
+        <div class="hr"></div>
+        <button class="btn2" data-open="${b.id}">إدارة الصفحات</button>
+        <a class="btn2" style="display:inline-block;margin-right:8px" href="book.html?book=${encodeURIComponent(b.id)}">معاينة كقارئ</a>
+        <button class="btn2" data-del="${b.id}">حذف</button>
+      </div>
+    `).join("") || `<div class="muted">لا يوجد كتب بعد</div>`;
+
+    document.querySelectorAll("[data-open]").forEach(btn=>{
+      btn.onclick = ()=> openBook(btn.getAttribute("data-open"));
+    });
+    document.querySelectorAll("[data-del]").forEach(btn=>{
+      btn.onclick = ()=> delBook(btn.getAttribute("data-del"));
+    });
+  }
+
+  function openBook(bookId){
+    CURRENT_BOOK = bookId;
+    const book = DATA.books.find(b=>b.id===bookId);
+    $("currentBook").textContent = book ? book.title : bookId;
+    $("pagesBox").style.display = "block";
+    $("previewBox").style.display = "none";
+    renderPages();
+    window.scrollTo({ top: $("pagesBox").offsetTop - 80, behavior:"smooth" });
+  }
+
+  function delBook(bookId){
+    if(!confirm("حذف الكتاب وكل صفحاته؟")) return;
+    DATA.pages = DATA.pages.filter(p=>p.bookId!==bookId);
+    DATA.books = DATA.books.filter(b=>b.id!==bookId);
+    if(CURRENT_BOOK===bookId) CURRENT_BOOK=null;
+    saveData(DATA);
+    $("pagesBox").style.display = CURRENT_BOOK ? "block" : "none";
+    renderBooks();
+  }
+
+  function renderPages(){
+    const pages = DATA.pages
+      .filter(p=>p.bookId===CURRENT_BOOK)
+      .sort((a,b)=>Number(a.pageNo)-Number(b.pageNo));
+
+    $("pagesList").innerHTML = pages.map(p=>`
+      <div class="card">
+        <b>${p.pageNo}) ${esc(p.title)}</b>
+        <div class="muted">Template: ${esc(p.style?.template||"plain")} • Font: ${p.style?.fontSize||18}px</div>
+        <div class="hr"></div>
+        <button class="btn2" data-edit="${p.id}">تعديل</button>
+        <a class="btn2" style="display:inline-block;margin-right:8px" href="page.html?book=${encodeURIComponent(p.bookId)}&page=${encodeURIComponent(p.id)}">فتح</a>
+        <button class="btn2" data-delpage="${p.id}">حذف</button>
+      </div>
+    `).join("") || `<div class="muted">لا يوجد صفحات بعد</div>`;
+
+    document.querySelectorAll("[data-delpage]").forEach(btn=>{
+      btn.onclick = ()=> delPage(btn.getAttribute("data-delpage"));
+    });
+    document.querySelectorAll("[data-edit]").forEach(btn=>{
+      btn.onclick = ()=> loadPageForEdit(btn.getAttribute("data-edit"));
+    });
+  }
+
+  function delPage(pageId){
+    if(!confirm("حذف الصفحة؟")) return;
+    DATA.pages = DATA.pages.filter(p=>p.id!==pageId);
+    saveData(DATA);
+    renderPages();
+  }
+
+  function loadPageForEdit(pageId){
+    const p = DATA.pages.find(x=>x.id===pageId);
+    if(!p) return;
+    $("pNo").value = p.pageNo;
+    $("pTitle").value = p.title;
+    $("editor").innerHTML = p.contentHtml || "";
+    $("tpl").value = p.style?.template || "plain";
+    $("fontSize").value = p.style?.fontSize || 18;
+    $("bg").value = p.style?.bg || "#ffffff";
+    $("text").value = p.style?.text || "#1a1a1a";
+    $("width").value = String(p.style?.width || 900);
+
+    pendingPageImg = p.imageUrl || "";
+    $("pImgPreview").style.display = pendingPageImg ? "block" : "none";
+    $("pImgPreview").src = pendingPageImg || "";
+
+    $("pAudioUrl").value = p.audioUrl || "";
+    $("pVideoUrl").value = p.videoUrl || "";
+    $("addPageBtn").dataset.editing = pageId;
+    toast("msgPage","✅ تم تحميل الصفحة للتعديل");
+  }
+
+  // ===== Cover upload =====
+  $("bCoverFile").addEventListener("change", async (e)=>{
+    const f = e.target.files?.[0];
+    if(!f) return;
+    pendingCover = await fileToDataUrl(f);
+    $("bCoverPreview").src = pendingCover;
+    $("bCoverPreview").style.display = "block";
+  });
+
+  // ===== Page image upload =====
+  $("pImgFile").addEventListener("change", async (e)=>{
+    const f = e.target.files?.[0];
+    if(!f) return;
+    pendingPageImg = await fileToDataUrl(f);
+    $("pImgPreview").src = pendingPageImg;
+    $("pImgPreview").style.display = "block";
+  });
+
+  // ===== Editor toolbar =====
+  $("bBold").onclick = ()=> cmd("bold");
+  $("bItalic").onclick = ()=> cmd("italic");
+  $("bUnderline").onclick = ()=> cmd("underline");
+  $("bH2").onclick = ()=> cmd("formatBlock","H2");
+  $("bH3").onclick = ()=> cmd("formatBlock","H3");
+  $("bUL").onclick = ()=> cmd("insertUnorderedList");
+  $("bOL").onclick = ()=> cmd("insertOrderedList");
+  $("bRight").onclick = ()=> cmd("justifyRight");
+  $("bCenter").onclick = ()=> cmd("justifyCenter");
+  $("bLeft").onclick = ()=> cmd("justifyLeft");
+  $("color").addEventListener("input",(e)=> cmd("foreColor", e.target.value));
+
+  $("inTextImg").addEventListener("change", async (e)=>{
+    const f = e.target.files?.[0];
+    if(!f) return;
+    const url = await fileToDataUrl(f);
+    cmd("insertImage", url);
+    e.target.value = "";
+  });
+
+  // ===== Add book =====
+  $("addBookBtn").onclick = ()=>{
+    const title = $("bTitle").value.trim();
+    if(!title) return toast("msgBook","اكتب عنوان الكتاب");
+    const book = {
+      id: uuid("book"),
+      title,
+      description: $("bDesc").value.trim(),
+      coverUrl: pendingCover || "",
+      createdAt: new Date().toISOString()
+    };
+    DATA.books.push(book);
+    saveData(DATA);
+
+    $("bTitle").value=""; $("bDesc").value=""; $("bCoverFile").value="";
+    pendingCover = ""; $("bCoverPreview").style.display="none";
+    toast("msgBook","✅ تم إضافة الكتاب");
+    renderBooks();
+  };
+
+  // ===== Add/Edit page =====
+  $("addPageBtn").onclick = ()=>{
+    if(!CURRENT_BOOK) return toast("msgPage","اختر كتاباً أولاً");
+    const pageNo = Number($("pNo").value || 1);
+    const title = $("pTitle").value.trim() || `صفحة ${pageNo}`;
+    const contentHtml = $("editor").innerHTML;
+
+    const style = {
+      template: $("tpl").value,
+      fontSize: Number($("fontSize").value || 18),
+      bg: $("bg").value,
+      text: $("text").value,
+      width: Number($("width").value || 900)
+    };
+
+    const editingId = $("addPageBtn").dataset.editing || "";
+    if(editingId){
+      const p = DATA.pages.find(x=>x.id===editingId);
+      if(p){
+        p.pageNo = pageNo;
+        p.title = title;
+        p.contentHtml = contentHtml;
+        p.imageUrl = pendingPageImg || "";
+        p.audioUrl = $("pAudioUrl").value.trim();
+        p.videoUrl = $("pVideoUrl").value.trim();
+        p.style = style;
+      }
+      $("addPageBtn").dataset.editing = "";
+      toast("msgPage","✅ تم تحديث الصفحة");
+    } else {
+      DATA.pages.push({
+        id: uuid("page"),
+        bookId: CURRENT_BOOK,
+        pageNo,
+        title,
+        contentHtml,
+        imageUrl: pendingPageImg || "",
+        audioUrl: $("pAudioUrl").value.trim(),
+        videoUrl: $("pVideoUrl").value.trim(),
+        style
+      });
+      toast("msgPage","✅ تم إضافة الصفحة");
+    }
+
+    saveData(DATA);
+    renderPages();
+  };
+
+  // ===== Preview =====
+  $("previewBtn").onclick = ()=>{
+    const style = {
+      template: $("tpl").value,
+      fontSize: Number($("fontSize").value || 18),
+      bg: $("bg").value,
+      text: $("text").value,
+      width: Number($("width").value || 900)
+    };
+    $("previewBox").style.display = "block";
+    $("preview").innerHTML = renderPagePreview($("editor").innerHTML, pendingPageImg, style);
+    window.scrollTo({ top: $("previewBox").offsetTop - 80, behavior:"smooth" });
+  };
+
+  function renderPagePreview(html, img, style){
+    const containerStyle = `max-width:${style.width}px;margin:0 auto;background:${style.bg};color:${style.text};font-size:${style.fontSize}px;border-radius:16px;padding:16px;border:1px solid #eee`;
+    if(style.template==="plain"){
+      return `<div style="${containerStyle}">${img?`<img class="cover" src="${img}">`:""}${html}</div>`;
+    }
+    if(style.template==="card"){
+      return `<div style="${containerStyle};box-shadow:0 10px 24px rgba(0,0,0,.08)">${img?`<img class="cover" src="${img}">`:""}${html}</div>`;
+    }
+    // split
+    return `
+      <div style="${containerStyle}">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start">
+          <div>${img?`<img class="cover" src="${img}">`:""}<div class="muted">وسائط/صور</div></div>
+          <div>${html}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ===== Import/Export/Reset =====
+  $("exportBtn").onclick = ()=> downloadJson("data.json", DATA);
+  $("importBtn").onclick = ()=> $("importFile").click();
+  $("importFile").addEventListener("change", async (e)=>{
+    const f = e.target.files?.[0]; if(!f) return;
+    const text = await f.text();
+    try{
+      DATA = JSON.parse(text);
+      ensureShape();
+      saveData(DATA);
+      CURRENT_BOOK = null;
+      $("pagesBox").style.display="none";
+      toast("msgBook","✅ تم الاستيراد");
+      renderBooks();
+    }catch(err){
+      alert("JSON غير صالح");
+    }
+    e.target.value = "";
+  });
+
+  $("resetBtn").onclick = async ()=>{
+    if(!confirm("حذف النسخة المحلية والرجوع لملف data.json؟")) return;
+    resetLocal();
+    DATA = await loadData();
+    ensureShape();
+    CURRENT_BOOK=null;
+    $("pagesBox").style.display="none";
+    renderBooks();
+  };
+
+  // ===== Init =====
+  DATA = await loadData();
+  ensureShape();
+  renderBooks();
+</script>
+</body>
+</html>

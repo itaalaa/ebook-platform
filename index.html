@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>المكتبة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <div><b style="font-size:18px">منصة الكتب الإلكترونية</b> <span class="pill">Library</span></div>
+    <a href="admin.html">لوحة الأدمن</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="app" class="card">تحميل...</div>
+</div>
+
+<script type="module">
+  import { loadData, esc } from "./assets/app.js";
+  const app = document.getElementById("app");
+
+  try{
+    const data = await loadData();
+    const books = data.books || [];
+
+    app.innerHTML = `
+      <h2>📚 المكتبة</h2>
+      <div class="grid">
+        ${books.map(b=>`
+          <div class="card">
+            ${b.coverUrl ? `<img src="${b.coverUrl}">`:""}
+            <h3>${esc(b.title)}</h3>
+            <div class="muted">${esc(b.description||"")}</div>
+            <div class="hr"></div>
+            <a href="book.html?book=${encodeURIComponent(b.id)}">فتح الكتاب</a>
+          </div>
+        `).join("")}
+      </div>
+      ${books.length ? "" : `<div class="muted">لا يوجد كتب بعد. افتح لوحة الأدمن وأضف كتاب.</div>`}
+    `;
+  }catch(e){
+    app.innerHTML = `<b style="color:#b00020">خطأ</b><pre>${e.message}</pre>`;
+  }
+</script>
+</body>
+</html>
