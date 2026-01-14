@@ -1,1 +1,44 @@
-{ "books": [], "pages": [] }
+{
+  "books": [
+    {
+      "id": "book-1",
+      "title": "كتابي الأول",
+      "description": "وصف بسيط للكتاب",
+      "coverUrl": "",
+      "createdAt": "2026-01-13T00:00:00.000Z"
+    }
+  ],
+  "pages": [
+    {
+      "id": "page-1",
+      "bookId": "book-1",
+      "pageNo": 1,
+      "title": "الصفحة الأولى",
+      "contentHtml": "<h2>مرحبا</h2><p>هذا مثال محتوى.</p>",
+      "imageUrl": "",
+      "videoUrl": "",
+      "audioUrl": ""
+    }
+  ],
+  "blocks": [
+    {
+      "id": "block-1",
+      "pageId": "page-1",
+      "type": "toggle",
+      "sort": 1,
+      "data": { "q": "سؤال؟", "a": "هذه إجابة تظهر وتختفي." }
+    },
+    {
+      "id": "block-2",
+      "pageId": "page-1",
+      "type": "quiz",
+      "sort": 2,
+      "data": {
+        "q": "اختر الإجابة الصحيحة:",
+        "choices": ["أ", "ب", "ج"],
+        "correct": 2,
+        "explain": "الإجابة الصحيحة هي (ب)."
+      }
+    }
+  ]
+}
